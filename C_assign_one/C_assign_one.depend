@@ -1,0 +1,30 @@
+# depslib dependency file v1.0
+1457878198 source:/home/zippo/Desktop/denver-os-pa-c-master/main.c
+	"test_suite.h"
+
+1457878198 /home/zippo/Desktop/denver-os-pa-c-master/mem_pool.h
+	<stddef.h>
+
+1458523884 source:/home/zippo/Desktop/denver-os-pa-c-master/mem_pool.c
+	<stdlib.h>
+	<assert.h>
+	<stdio.h>
+	"mem_pool.h"
+
+1458524509 source:/home/zippo/Desktop/denver-os-pa-c-master/test_suite.c
+	<stdio.h>
+	<stdlib.h>
+	<stdarg.h>
+	<stddef.h>
+	<setjmp.h>
+	<cmocka.h>
+	"test_suite.h"
+	"mem_pool.h"
+
+1457926814 /home/zippo/Desktop/denver-os-pa-c-master/cmocka.h
+	<stdarg.h>
+	<stddef.h>
+	<setjmp.h>
+
+1457878198 /home/zippo/Desktop/denver-os-pa-c-master/test_suite.h
+
