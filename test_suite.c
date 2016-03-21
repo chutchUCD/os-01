@@ -326,7 +326,7 @@ static void test_pool_ff_metadata(void **state) {
                     {10000, 1},
                     {pool->total_size-100-1000-10000, 0}
             }; // one allocations 10000 w/ two gaps
-    check_metadata(pool, FIRST_FIT, POOL_SIZE, 10000, 1, 1);
+    check_metadata(pool, FIRST_FIT, POOL_SIZE, 10000, 1, 2);
 
     // 7. allocate 1100
     alloc_pt alloc3 = mem_new_alloc(pool, 1100);

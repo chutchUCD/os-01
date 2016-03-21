@@ -269,7 +269,6 @@ alloc_status mem_pool_close(pool_pt pool) {
     // check if this pool is allocated - not that I don't disagree with this, but want to sdo it first, Cecil
     //especially since the pool_mgr and the pool will have the same address. So there is no reason not to do this first.
     if(pool == NULL){
-        printf("YHIP!\n");
         return ALLOC_FAIL;
     }
 
@@ -277,8 +276,6 @@ alloc_status mem_pool_close(pool_pt pool) {
     // check if it has zero allocations
 
     if( pool->num_gaps != 1 || pool->num_allocs != 0){
-            printf("HIP!\n");
-            printf("%u:%u", pool->num_gaps, pool->num_allocs);
         return ALLOC_NOT_FREED;
     }//Then, return a failing error code if either of those checks happens to be true.
 
@@ -485,7 +482,7 @@ alloc_status mem_del_alloc(pool_pt pool, alloc_pt alloc) {
     Its like a toy puzzle. Put the bolt in, pull it back, merge until you reach the node head or an allocated node.
     Then merge that node into the node head if you reached it.
     Then merge any nodes beyond the node head into the node head.
-    */
+    *//*
     pool_mgr_pt pool_mgr = (pool_mgr_pt)pool;//get pool manager
     node_pt init = (node_pt)alloc;// set up the allocation pointer from alloc
     node_pt iter =  pool_mgr->node_heap;//then point it to its next item.
@@ -623,7 +620,23 @@ alloc_status mem_del_alloc(pool_pt pool, alloc_pt alloc) {
     iter = NULL;
     head = NULL;
     return ALLOC_FAIL;
-    /*
+    */
+    // get mgr from pool by casting the pointer to (pool_mgr_pt)
+    pool_mgr_pt pool_mgr= (pool_mgr_pt)pool;
+    // get node from alloc by casting the pointer to (node_pt)
+    //node_pt node = (node_pt) alloc;
+    node_pt init = (node_pt)alloc;// set up the allocation pointer from alloc
+    node_pt iter =  pool_mgr->node_heap;//then point it to its next item.
+
+    size_t error_ctr = 0;
+    while(iter != init){
+        iter = iter->next;
+        error_ctr +=1;
+        if(error_ctr > pool_mgr->total_nodes){
+            return ALLOC_FAIL;
+        }
+    }
+
     pool->alloc_size-=init->alloc_record.size;
     pool->num_allocs-=1;
     iter = iter->next;
@@ -671,7 +684,7 @@ alloc_status mem_del_alloc(pool_pt pool, alloc_pt alloc) {
                     iter->allocated = 0;
                 }
                 iter = iter->next;
-                }
+            }
             init->next = iter;
             iter->prev = init;
         }
@@ -680,15 +693,13 @@ alloc_status mem_del_alloc(pool_pt pool, alloc_pt alloc) {
         pool_mgr = NULL;
         return ALLOC_OK;
     }
-    */
-    /*
+
+
     if(alloc == NULL){
         return ALLOC_FAIL;
     }
-    // get mgr from pool by casting the pointer to (pool_mgr_pt)
-    pool_mgr_pt pool_mgr= (pool_mgr_pt)pool;
-    // get node from alloc by casting the pointer to (node_pt)
-    node_pt node = (node_pt) alloc;
+
+    return ALLOC_FAIL;
     // find the node in the node heap
     // this is node-to-delete
     // make sure it's found
@@ -703,7 +714,7 @@ alloc_status mem_del_alloc(pool_pt pool, alloc_pt alloc) {
     //   update metadata (used nodes)//done when remove from gap ix is called.
 
     //   update linked list:
-                    if (next->next) {
+    /*                if (next->next) {
                         next->next->prev = src;
                         src->next = next->next;
                     } else {
