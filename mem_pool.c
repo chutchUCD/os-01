@@ -636,6 +636,7 @@ alloc_pt mem_new_alloc(pool_pt pool, size_t size) {
     }
     else if (pool->policy == BEST_FIT)
     {
+        node_pt iter = NULL;//See note
         insert_node = NULL;
         size_t gap_i = 0;
         while (gap_i < pool->num_gaps && insert_node == NULL){
@@ -647,6 +648,21 @@ alloc_pt mem_new_alloc(pool_pt pool, size_t size) {
         }
         //simply move through the array of gaps until one is found.
         //Remove that gap using gap removal function call.
+        /*Test 19 states that nodes should be in some kind of order.
+        Therefore, do a quick search to find the first node of that
+        size and make that the insertion point.
+        */
+        if(insert_node != NULL){
+            iter = node_begin(pool_mgr);
+            while (iter != insert_node){
+                if(iter->alloc_record.size == insert_node->alloc_record.size && iter->allocated == 0){
+                    insert_node = iter;
+                }else{
+                    iter = iter->next;
+                }
+            }
+            iter = NULL;
+        }
     }else{
     //no recognizable policy provided? assert false
         assert(pool->policy == BEST_FIT || pool->policy == FIRST_FIT );
@@ -1076,15 +1092,6 @@ static alloc_status _mem_sort_gap_ix(pool_mgr_pt pool_mgr) {
     if (i <= 1){
         return ALLOC_OK;
     }
-    /*
-    i=0;
-    node_pt iter = pool_mgr->node_heap;
-    while(i < pool_mgr->pool.num_gaps){
-        if(iter->used == 1 && iter->allocated ==0){
-            pool_mgr->gap_ix[i].size = iter->alloc_record->size;
-            pool_mgr->gap_ix[i].node = iter;
-        }
-    }*/
     //if size one, pool already sorted.
     i=0;//make i point to one
     size_t j = 0;
@@ -1106,6 +1113,9 @@ static alloc_status _mem_sort_gap_ix(pool_mgr_pt pool_mgr) {
         }
         i+=1;
     }
+
+
+
     //_print_gap_ix(pool_mgr, 'a');
     i = 0;
     return ALLOC_OK;
