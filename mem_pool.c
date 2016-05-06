@@ -777,17 +777,17 @@ alloc_status mem_del_alloc(pool_pt pool, alloc_pt alloc) {
         //   check success
             if (is_success == ALLOC_OK){
         //   add the size to the node-to-delete
-                iter->alloc_record.size+=iter->next->alloc_record.size;
+                iter->alloc_record.size+=del_me->alloc_record.size;
             }
             else{
+                printf("BAAZ\n");
                 printf("%p, %p, %p, \n", iter, del_me , iter->next);
                 printf("%i : %i\n", del_me->allocated, del_me->alloc_record.size);
-                printf("BAAZ\n");
                 return ALLOC_NOT_FREED;
             }
         //   update node as unused
-            iter->next->used = 0;
-            iter->next->allocated = 0;
+            del_me->used = 0;
+            del_me->allocated = 0;
         //   update metadata (used nodes)//done when remove from gap ix is called.->treating used as a total count of all nodes used ever, do not do this.
         //   update linked list:
             del_me = remove_node(del_me, pool_mgr->node_heap);//decreases count by one and updates the links.
@@ -1046,7 +1046,6 @@ static alloc_status _mem_remove_from_gap_ix(pool_mgr_pt pool_mgr,
         }
     }
 
-
     if(is_del){
     //    pull the entries (i.e. copy over) one position up
         while( i < pool_mgr->pool.num_gaps - 1){
@@ -1058,11 +1057,11 @@ static alloc_status _mem_remove_from_gap_ix(pool_mgr_pt pool_mgr,
         pool_mgr->gap_ix[pool_mgr->pool.num_gaps - 1].node = NULL;
     // update metadata (num_gaps)
         pool_mgr->pool.num_gaps -=1;
+
         return ALLOC_OK;
     }
     //    this effectively deletes the chosen node
     // zero out the element at array end!
-    printf("HEREX\n");
     return ALLOC_FAIL;
 }
 
